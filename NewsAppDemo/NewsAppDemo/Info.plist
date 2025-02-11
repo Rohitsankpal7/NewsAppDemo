@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>BaseURL</key>
+	<string>https://newsapi.org/v2/top-headlines?country=us&amp;category=business&amp;apiKey=5711ea75277e438a98a5a65330f16f4c</string>
+</dict>
+</plist>
