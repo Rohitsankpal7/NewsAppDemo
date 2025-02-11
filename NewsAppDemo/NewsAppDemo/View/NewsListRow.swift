@@ -8,80 +8,74 @@
 import SwiftUI
 // Seperate row for List
 struct NewsListRow: View {
+    @Environment(\.colorScheme) var colorScheme // Add this to detect dark mode
+    
     @ObservedObject var viewModel: NewsViewModel
     
     var body: some View {
         ScrollView {
-            LazyVStack(spacing: 10) {
+            LazyVStack(spacing: 16) {
                 ForEach(viewModel.news) { item in
-                    HStack(spacing: 10) {
-                        VStack(alignment: .leading) {
+                    HStack(alignment: .center, spacing: 12) {
+                        // Content on left side
+                        VStack(alignment: .leading, spacing: 8) {
                             if let author = item.author {
                                 Text(author)
-                                    .font(.system(size: 10, weight: .medium, design: .monospaced))
+                                    .font(.system(size: 13, weight: .medium))
                                     .foregroundColor(.secondary)
-                                    .frame(height: 15)
                             }
                             
                             Text(item.title)
-                                .font(.system(size: 14, weight: .bold, design: .rounded))
+                                .font(.system(size: 15, weight: .semibold))
+                                .lineSpacing(4)
                                 .multilineTextAlignment(.leading)
-                                .lineSpacing(0.5)
-                                .foregroundColor(.primary)
-                            Spacer()
+                                .foregroundColor(colorScheme == .dark ? .white : .primary)
                             
                             if let date = item.publishedAt {
                                 Text(date.longDateFormatted())
-                                    .font(.footnote)
-                                    .foregroundColor(.gray)
+                                    .font(.system(size: 12))
+                                    .foregroundColor(.secondary)
                             }
                         }
-                        .padding()
+                        .padding(.vertical, 12)
+                        .padding(.leading, 16)
                         
-                        if let imageUrl = item.urlToImage, let url = URL(string: imageUrl) {
-                            AsyncImage(url: url) { phase in
-                                switch phase {
-                                case .empty:
-                                    ProgressView()
-                                case .success(let image):
-                                    image
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(width: 120, height: 120)
-                                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                                        .padding()
-                                case .failure:
-                                    Image(systemName: "photo")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 120, height: 120)
-                                        .foregroundColor(.gray)
-                                        .padding()
-                                @unknown default:
-                                    EmptyView()
+                        Spacer(minLength: 0)
+                        
+                        // Image on right side
+                        ZStack(alignment: .center) {
+                            if let imageUrl = item.urlToImage, let url = URL(string: imageUrl) {
+                                AsyncImage(url: url) { phase in
+                                    switch phase {
+                                    case .empty:
+                                        PlaceholderView()
+                                    case .success(let image):
+                                        image
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                    case .failure, _:
+                                        PlaceholderView()
+                                    }
                                 }
+                            } else {
+                                PlaceholderView()
                             }
-                        } else {
-                            Image("placeholder")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 120, height: 120)
-                                .foregroundColor(.gray)
-                                .padding()
                         }
+                        .frame(width: 120, height: 120)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .padding(.trailing, 16)
+                        .padding(.vertical)
                     }
-                    .frame(height: 140)
-                    .background(Color(.systemBackground))
-                    .cornerRadius(10)
-                    .shadow(radius: 2)
+                    .frame(maxWidth: .infinity)
+                    .background(colorScheme == .dark ? Color(.systemGray6) : .white)
+                    .cornerRadius(12)
+                    .shadow(color: colorScheme == .dark ? Color.black.opacity(0.3) : Color.gray.opacity(0.1), 
+                           radius: 5, x: 0, y: 2)
+                    .padding(.horizontal)
                 }
             }
+            .padding(.vertical)
         }
+        .background(colorScheme == .dark ? Color(.systemGray5) : Color(.systemGray6))
     }
 }
-private let dateFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateStyle = .long // Sets the date style to "February 11, 2025"
-    formatter.timeStyle = .none // Removes the time from the output
-    return formatter
-}()

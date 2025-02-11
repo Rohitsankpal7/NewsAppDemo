@@ -18,18 +18,30 @@ struct NewsView: View {
     var body: some View {
         NavigationView {
             NewsListRow(viewModel: viewModel)
-            .onAppear {
-                Task {
-                    do {
-                        try await viewModel.fetchNews()
-                    } catch {
-                        print("failed to load data")
+                .onAppear {
+                    Task {
+                        do {
+                            try await viewModel.fetchNews()
+                        } catch {
+                            print("failed to load data")
+                        }
                     }
                 }
-            }
-            .navigationTitle("Top Headlines")
+                .navigationTitle("Top Headlines")
+                .navigationBarTitleDisplayMode(.large)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: {
+                            Task {
+                                try? await viewModel.fetchNews()
+                            }
+                        }) {
+                            Image(systemName: "arrow.clockwise")
+                                .foregroundColor(.primary)
+                        }
+                    }
+                }
         }
-        .padding(15)
     }
 }
 
