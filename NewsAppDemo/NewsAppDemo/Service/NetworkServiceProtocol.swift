@@ -10,6 +10,3 @@ import Combine
 protocol NetworkServiceProtocol {
     func fetchNewsData() -> AnyPublisher<NewsResponseModel, Error>
 }
-
-
-//5711ea75277e438a98a5a65330f16f4c

@@ -14,30 +14,35 @@ struct NewsDetailView: View {
     let newsItem: NewsItems
     
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
         ScrollView {
             VStack(alignment: .center, spacing: 20) {
-                // News Header Image
-                if let imageUrl = newsItem.urlToImage, let url = URL(string: imageUrl) {
+                VStack(alignment: .leading) {
                     GeometryReader { geometry in
-                        AsyncImage(url: url) { phase in
-                            switch phase {
-                            case .empty:
-                                PlaceholderView()
-                                    .frame(width: geometry.size.width - 20)
-                                    .frame(height: 250)
-                            case .success(let image):
-                                image
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: geometry.size.width)
-                                    .frame(height: 250)
-                                    .clipped()
-                            case .failure, _:
-                                PlaceholderView()
-                                    .frame(width: geometry.size.width - 20)
-                                    .frame(height: 250)
+                        // News Header Image
+                        if let imageUrl = newsItem.urlToImage, let url = URL(string: imageUrl) {
+                            AsyncImage(url: url) { phase in
+                                switch phase {
+                                case .empty:
+                                    PlaceholderView()
+                                        .frame(width: geometry.size.width - 20)
+                                        .frame(height: 250)
+                                case .success(let image):
+                                    image
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: geometry.size.width)
+                                        .frame(height: 250)
+                                        .clipped()
+                                case .failure, _:
+                                    PlaceholderView()
+                                        .frame(width: geometry.size.width - 20)
+                                        .frame(height: 250)
+                                }
                             }
+                        } else {
+                            PlaceholderView()
+                                .frame(width: geometry.size.width - 20)
+                                .frame(height: 250)
                         }
                     }
                     .frame(height: 250)
@@ -84,7 +89,7 @@ struct NewsDetailView: View {
                             Text(description)
                                 .font(.body)
                                 .foregroundColor(colorScheme == .dark ? .white : .primary)
-                                .lineSpacing(6)
+                                .lineSpacing(8)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
                         
@@ -93,7 +98,7 @@ struct NewsDetailView: View {
                             Text(content)
                                 .font(.body)
                                 .foregroundColor(.secondary)
-                                .lineSpacing(6)
+                                .lineSpacing(8)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
                         
@@ -111,7 +116,7 @@ struct NewsDetailView: View {
                             }
                         }
                     }
-                    .padding(.horizontal)
+                    .padding(.horizontal, 16)
                 }
             }
         }
@@ -129,9 +134,6 @@ struct NewsDetailView: View {
                 }
             }
         }
-        .safeAreaInset(edge: .top) {
-            Color.clear.frame(height: 0)
-        }
     }
     
     private func shareNews(url: String) {
@@ -146,13 +148,12 @@ struct NewsDetailView: View {
     }
 }
 
-// Preview provider
 #Preview {
-    NavigationView {
+    NavigationStack {
         NewsDetailView(newsItem: NewsItems(
             source: Source(id: "1", name: "Test News"),
             author: "Rohit Sankpal",
-            title: "U.S. Steel Activist Wants a New CEO. That’s Not Why the Stock Is Rising. - Barron's",
+            title: "U.S. Steel Activist Wants a New CEO. That's Not Why the Stock Is Rising. - Barron's",
             description: "The financial watchdog agency was formed after a 2008 crisis.",
             url: "https://example.com",
             urlToImage: nil,

@@ -16,7 +16,7 @@ struct NewsView: View {
     }
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             NewsListRow(viewModel: viewModel)
                 .onAppear {
                     Task {
@@ -31,11 +31,11 @@ struct NewsView: View {
                 .navigationBarTitleDisplayMode(.large)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: {
+                        Button {
                             Task {
                                 try? await viewModel.fetchNews()
                             }
-                        }) {
+                        } label: {
                             Image(systemName: "arrow.clockwise")
                                 .foregroundColor(.primary)
                         }
