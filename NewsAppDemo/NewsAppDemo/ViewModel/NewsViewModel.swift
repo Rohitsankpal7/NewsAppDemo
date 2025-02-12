@@ -16,8 +16,8 @@ class NewsViewModel: ObservableObject {
     private let newsServiceProtocol: NetworkServiceProtocol
     private var cancellables: Set<AnyCancellable> = []
     
-    init(newsServiceProtocol: NetworkServiceProtocol) {
-        self.newsServiceProtocol = newsServiceProtocol
+    init(newsService: NetworkServiceProtocol = NetworkService()) {
+        self.newsServiceProtocol = newsService
     }
     
     func fetchNews() async throws {

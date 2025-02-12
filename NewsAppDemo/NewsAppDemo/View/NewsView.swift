@@ -11,8 +11,7 @@ struct NewsView: View {
     @StateObject private var viewModel: NewsViewModel
     
     init() {
-        let networkService = NetworkService()
-        _viewModel = StateObject(wrappedValue: NewsViewModel(newsServiceProtocol: networkService))
+        _viewModel = StateObject(wrappedValue: NewsViewModel())
     }
     
     var body: some View {

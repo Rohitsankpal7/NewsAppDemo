@@ -17,6 +17,12 @@ enum NetworkError: Error, Equatable {
 
 class NetworkService: NetworkServiceProtocol {
     
+    private let session: URLSession
+    
+    init(session: URLSession = .shared) {
+        self.session = session
+    }
+    
     var baseURL: String {
         if let path = Bundle.main.path(forResource: "Info", ofType: "plist"),
            let config = NSDictionary(contentsOfFile: path),
@@ -31,7 +37,7 @@ class NetworkService: NetworkServiceProtocol {
             return Fail(error: NetworkError.invalidURL).eraseToAnyPublisher()
         }
         
-        return URLSession.shared.dataTaskPublisher(for: url)
+        return session.dataTaskPublisher(for: url)
             .tryMap { data, response in
                 guard let httpResponse = response as? HTTPURLResponse,
                       (200...299).contains(httpResponse.statusCode) else {
